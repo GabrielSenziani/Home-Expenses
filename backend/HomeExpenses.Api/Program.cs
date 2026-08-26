@@ -17,7 +17,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("PermitirFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
+        policy.WithOrigins(
+            "http://localhost:5173",
+            "https://home-expenses-1.onrender.com"
+            )
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
