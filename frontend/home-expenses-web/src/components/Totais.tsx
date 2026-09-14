@@ -11,7 +11,7 @@ function Totais({ atualizacao }: TotaisProps) {
 
     useEffect(() => {
     async function buscaTodasAsPessoas() {
-        const busca = await api.get<TotalGeral>("/Pessoas/totais");
+        const busca = await api.get<TotalGeral>("/api/Pessoas/totais");
         setTotalGeral(busca.data);
     } buscaTodasAsPessoas();
 }, [atualizacao]);

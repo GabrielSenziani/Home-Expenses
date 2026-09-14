@@ -12,17 +12,17 @@ function Transacoes({ onAtualizar, atualizacao }: TransacoesProps) {
     const [transacoes, setTransacoes] = useState<Transacao[]>([]);
     const [pessoas, setPessoas] = useState<Pessoa[]>([]);
     const [descricao, setDescricao] = useState("");
-    const [valor, setValor] = useState(0);
+    const [valor, setValor] = useState<number | "">("");
     const [tipo, setTipo] = useState(0); // 0 = Despesa, 1 = Receita
     const [pessoaId, setPessoaId] = useState(0);
 
     async function carregarTransacoes() {
-        const resposta = await api.get<Transacao[]>("/Transacoes");
+        const resposta = await api.get<Transacao[]>("/api/Transacoes");
         setTransacoes(resposta.data);
     }
 
     async function carregarPessoas() {
-        const resposta = await api.get<Pessoa[]>("/Pessoas");
+        const resposta = await api.get<Pessoa[]>("/api/Pessoas");
         setPessoas(resposta.data);
     }
 
@@ -35,7 +35,11 @@ function Transacoes({ onAtualizar, atualizacao }: TransacoesProps) {
     }, [atualizacao]);
 
     async function handleCriar() {
-        await api.post("/Transacoes", {
+        if (!descricao.trim() || valor === "" || valor <= 0 || pessoaId === 0) {
+        alert("Preencha a descrição, informe um valor maior que 0 e selecione uma pessoa.");
+        return;
+  }
+        await api.post("/api/Transacoes", {
             descricao: descricao,
             valor: valor,
             tipo: tipo,
@@ -49,51 +53,80 @@ function Transacoes({ onAtualizar, atualizacao }: TransacoesProps) {
 
         // limpa o formulário
        setDescricao("");
-       setValor(0);
+       setValor("");
        setTipo(0);
-       setPessoaId(0)
+       setPessoaId(0);
     }
 
-    return (
-        <div>
-            <div>
-                <input
-                    type="text"
-                    placeholder="Descrição"
-                    value={descricao}
-                    onChange={(e) => setDescricao(e.target.value)}
-                />
-                <input
-                    type="number"
-                    placeholder="Valor"
-                    value={valor}
-                    onChange={(e) => setValor(Number(e.target.value))}
-                />
-                <select value={tipo} onChange={(e) => setTipo(Number(e.target.value))}>
-                    <option value={0}>Despesa</option>
-                    <option value={1}>Receita</option>
-                </select>
-                <select value={pessoaId} onChange={(e) => setPessoaId(Number(e.target.value))}>
-                    <option value={0}>Selecione a pessoa</option>
-                    {pessoas.map((pessoa) => (
-                        <option key={pessoa.id} value={pessoa.id}>
-                            {pessoa.nome}
-                        </option>
-                    ))}
-                </select>
-                <button onClick={handleCriar}>Cadastrar Transação</button>
-            </div>
+return (
+  <div>
+    <div className="transacoes-form">
+      <div className="form-group">
+        <label htmlFor="descricao">Descrição</label>
+        <input
+          id="descricao"
+          type="text"
+          placeholder="Digite a descrição"
+          value={descricao}
+          onChange={(e) => setDescricao(e.target.value)}
+        />
+      </div>
 
-            <ul>
-                {transacoes.map((transacao) => (
-                    <li key={transacao.id}>
-                        {transacao.descricao} — R$ {transacao.valor} —{" "}
-                        {transacao.tipo === 0 ? "Despesa" : "Receita"}
-                    </li>
-                ))}
-            </ul>
-        </div>
-    );
+      <div className="form-group">
+        <label htmlFor="valor">Valor</label>
+        <input
+          id="valor"
+          type="number"
+          placeholder="Digite o valor"
+          value={valor}
+          onChange={(e) =>
+            setValor(e.target.value === "" ? "" : Number(e.target.value))
+          }
+        />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="tipo">Tipo</label>
+        <select
+          id="tipo"
+          value={tipo}
+          onChange={(e) => setTipo(Number(e.target.value))}
+        >
+          <option value={0}>Despesa</option>
+          <option value={1}>Receita</option>
+        </select>
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="pessoaId">Pessoa</label>
+        <select
+          id="pessoaId"
+          value={pessoaId}
+          onChange={(e) => setPessoaId(Number(e.target.value))}
+        >
+          <option value={0}>Selecione a pessoa</option>
+
+          {pessoas.map((pessoa) => (
+            <option key={pessoa.id} value={pessoa.id}>
+              {pessoa.nome}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <button onClick={handleCriar}>Cadastrar Transação</button>
+    </div>
+
+    <ul>
+      {transacoes.map((transacao) => (
+        <li key={transacao.id}>
+          {transacao.descricao} — R$ {transacao.valor} —{" "}
+          {transacao.tipo === 0 ? "Despesa" : "Receita"}
+        </li>
+      ))}
+    </ul>
+  </div>
+);
 }
 
 export default Transacoes;
