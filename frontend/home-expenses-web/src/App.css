@@ -79,3 +79,31 @@ button:hover {
   gap: 16px;
   align-items: end;
 }
+
+.assistente-botao-flutuante {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.assistente-painel {
+  position: fixed;
+  bottom: 90px;
+  right: 24px;
+  width: 320px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+}

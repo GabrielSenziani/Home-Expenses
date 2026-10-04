@@ -3,6 +3,7 @@ import { useState } from "react";
 import ListaPessoas from "./components/ListaPessoas";
 import Transacoes from "./components/Transacoes";
 import Totais from "./components/Totais";
+import AssistenteFinanceiro from "./components/AssistenteFinanceiro";
 
 import "./App.css";
 
@@ -60,6 +61,8 @@ return (
 
         <Totais atualizacao={atualizacao} />
       </div>
+
+      <AssistenteFinanceiro />
     </div>
   );
 }

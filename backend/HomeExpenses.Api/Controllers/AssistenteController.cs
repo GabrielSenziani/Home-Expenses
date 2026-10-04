@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using HomeExpenses.Api.DTOs;
 using HomeExpenses.Api.Data;
+using HomeExpenses.Api.Models;
 using System.Net.Http.Json;
 using System.Text.Json;
 
@@ -78,6 +79,103 @@ public class AssistenteController : ControllerBase
 
     return StatusCode(500, "Erro inesperado.");
  }
+
+ [HttpPost("confirmar")]
+public async Task<IActionResult> ConfirmarAnalise([FromBody] ConfirmacaoAnaliseDto dto)
+{
+    var pessoa = _context.TabelaPessoa
+        .FirstOrDefault(p => p.Nome == dto.NomePessoa);
+
+    if (pessoa == null)
+    {
+        return NotFound("Pessoa não encontrada.");
+    }
+
+    if (pessoa.IsMinor)
+    {
+        return Ok(new ResultadoAnaliseDto
+        {
+            Aviso = "A análise de saldo e gastos está disponível apenas para pessoas com 18 anos ou mais."
+        });
+    }
+
+    var agora = DateTime.Now;
+
+    var transacoesDoMes = _context.TabelaTransacao
+    .Where(t => t.PessoaId == pessoa.Id
+             && t.Data.Month == agora.Month
+             && t.Data.Year == agora.Year)
+    .ToList();
+
+    var receitas = transacoesDoMes
+    .Where(t => t.Tipo == TipoTransacao.Receita);
+
+    var despesas = transacoesDoMes
+    .Where(t => t.Tipo == TipoTransacao.Despesa);
+
+if (!string.IsNullOrEmpty(dto.CategoriaMencionada))
+{
+    despesas = despesas
+    .Where(t => t.Descricao.Contains(dto.CategoriaMencionada, StringComparison.OrdinalIgnoreCase));
+}
+
+    var totalReceitas = receitas.Sum(t => t.Valor);
+    var totalDespesas = despesas.Sum(t => t.Valor);
+    var saldo = totalReceitas - totalDespesas;
+
+    var textoExplicativo = await GerarTextoExplicativo(totalReceitas, totalDespesas, saldo);
+
+    var resultado = new ResultadoAnaliseDto
+{
+    TotalReceitas = totalReceitas,
+    TotalDespesas = totalDespesas,
+    Saldo = saldo,
+    TextoExplicativo = textoExplicativo
+};
+
+    return Ok(resultado);
+}
+
+  private async Task<string> GerarTextoExplicativo(decimal totalReceitas, decimal totalDespesas, decimal saldo)
+{
+    var apiKey = _configuration["Gemini:ApiKey"];
+    var httpClient = _httpClientFactory.CreateClient();
+    var prompt = MontarPromptExplicativo(totalReceitas, totalDespesas, saldo);
+
+    var corpoRequisicao = new
+    {
+        contents = new[]
+        {
+            new { parts = new[] { new { text = prompt } } }
+        }
+    };
+
+    var response = await httpClient.PostAsJsonAsync(
+        $"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key={apiKey}",
+        corpoRequisicao
+    );
+
+    if (!response.IsSuccessStatusCode)
+    {
+        var erroDetalhado = await response.Content.ReadAsStringAsync();
+        Console.WriteLine($"Erro Gemini (texto explicativo): {erroDetalhado}");
+        return "Não foi possível gerar uma explicação no momento.";
+    }
+
+    var resultado = await response.Content.ReadFromJsonAsync<GeminiResponse>();
+    return resultado?.Candidates?[0]?.Content?.Parts?[0]?.Text ?? "Não foi possível gerar uma explicação no momento.";
+}
+
+  private string MontarPromptExplicativo(decimal totalReceitas, decimal totalDespesas, decimal saldo)
+  {
+    return $@"
+Você é um assistente financeiro. Com base nos dados abaixo, escreva um texto amigavel e explicativo ao usuário indicando a porcentagem dos gastos dele em relação a receita e um conselho prático ao usuario. Responda APENAS com o texto final, SEM markdown, SEM explicações adicionais.
+
+Total de receitas: {totalReceitas}
+Total de despesas: {totalDespesas}
+Saldo: {saldo}
+  ";
+  }
 
   private string MontarPrompt(string textoUsuario)
     {

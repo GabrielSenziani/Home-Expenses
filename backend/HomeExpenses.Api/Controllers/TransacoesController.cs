@@ -31,13 +31,19 @@ public class TransacoesController : ControllerBase
 {
     return BadRequest("Pessoa não encontrada.");
 }
+
+if (dto.Data > DateTime.Now)
+{
+    return BadRequest("Não é possível cadastrar uma transação com data futura.");
+}
     // Cria a entidade Transacao a partir do DTO
     var transacao = new Transacao
     {
         Descricao = dto.Descricao,
         Valor = dto.Valor,
         Tipo = dto.Tipo,
-        PessoaId = dto.PessoaId
+        PessoaId = dto.PessoaId,
+        Data = dto.Data
     };
 
     if (pessoa.IsMinor && transacao.Tipo != TipoTransacao.Despesa)
