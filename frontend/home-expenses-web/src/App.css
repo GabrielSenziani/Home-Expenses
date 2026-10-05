@@ -1,3 +1,10 @@
+body {
+  background: linear-gradient(135deg, #0a0e0a 0%, #0f1f17 100%);
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+}
+
 form,
 .transacoes-form {
   display: flex;
@@ -14,15 +21,22 @@ form,
 
 label {
   font-weight: 600;
-  color: #1e3a5f;
+  color: #a7f3d0;
 }
 
 input,
 select {
   padding: 10px 12px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid rgba(16, 185, 129, 0.3);
   border-radius: 8px;
   font-size: 14px;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #e5e7eb;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #6b7280;
 }
 
 button {
@@ -33,14 +47,19 @@ button {
   padding: 10px 16px;
   border: none;
   border-radius: 8px;
-  background-color: #2563eb;
+  background-color: #10b981;
   color: white;
   font-weight: 600;
   cursor: pointer;
 }
 
-button:hover {
-  background-color: #1d4ed8;
+button:hover:not(:disabled) {
+  background-color: #059669;
+}
+
+button:disabled {
+  background-color: #374151;
+  cursor: not-allowed;
 }
 
 .app {
@@ -50,12 +69,19 @@ button:hover {
 }
 
 .card {
-  background: white;
-  border: 1px solid #dbe4f0;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(16, 185, 129, 0.2);
   border-radius: 16px;
   padding: 24px;
   margin-bottom: 24px;
-  box-shadow: 0 4px 12px rgba(30, 58, 95, 0.06);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.card h1,
+h1 {
+  color: #e5e7eb;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
 }
 
 .card h2 {
@@ -63,14 +89,34 @@ button:hover {
   align-items: center;
   gap: 8px;
   margin: 0 0 8px;
-  color: #1e3a5f;
+  color: #a7f3d0;
   font-size: 22px;
 }
 
 .card-description {
   margin: 0 0 24px;
-  color: #64748b;
+  color: #9ca3af;
   font-size: 14px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(16, 185, 129, 0.15);
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: #e5e7eb;
 }
 
 .pessoas-form {
@@ -84,17 +130,17 @@ button:hover {
   position: fixed;
   bottom: 24px;
   right: 24px;
-  width: 56px;
-  height: 56px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
-  background-color: #2563eb;
+  background: linear-gradient(135deg, #10b981, #059669);
   color: white;
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .assistente-painel {
@@ -102,8 +148,26 @@ button:hover {
   bottom: 90px;
   right: 24px;
   width: 320px;
-  background-color: white;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(16, 185, 129, 0.3);
   border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   padding: 16px;
+  color: #e5e7eb;
+}
+
+textarea {
+  padding: 10px 12px;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #e5e7eb;
+}
+
+p {
+  color: #e5e7eb;
 }
