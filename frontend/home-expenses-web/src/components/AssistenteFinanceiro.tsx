@@ -59,7 +59,7 @@ function AssistenteFinanceiro() {
 
   function iniciarCooldown() {
     setPodeEnviar(false);
-    setSegundosRestantes(60);
+    setSegundosRestantes(30);
 
     const intervalo = setInterval(() => {
       setSegundosRestantes((segundos) => {

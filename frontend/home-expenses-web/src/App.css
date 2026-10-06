@@ -49,6 +49,16 @@ input[type="number"]::-webkit-outer-spin-button {
   margin: 0;
 }
 
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) brightness(0.8);
+  cursor: pointer;
+}
+
+select option {
+  background-color: #0f1f17;
+  color: #e5e7eb;
+}
+
 button {
   display: inline-flex;
   align-items: center;
