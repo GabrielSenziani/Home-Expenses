@@ -4,7 +4,7 @@ Aplicação Full Stack para controle de gastos residenciais, desenvolvida como p
 
 ## Deploy
 
-- **Frontend:** [https://home-expenses-1.onrender.com](https://home-expenses-1.onrender.com/swagger)
+- **Frontend:** [https://home-expenses-1.onrender.com](https://home-expenses-1.onrender.com)
 - **Backend (Swagger):** [https://home-expenses-4nyv.onrender.com/swagger](https://home-expenses-4nyv.onrender.com/swagger)
 
 ## Tecnologias Utilizadas
