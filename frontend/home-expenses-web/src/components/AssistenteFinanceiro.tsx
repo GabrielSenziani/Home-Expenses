@@ -112,6 +112,7 @@ function AssistenteFinanceiro() {
   setResultado(null);
   setEtapa("digitando");
 }
+if (dadosExtraidos) { void dadosExtraidos; }
 
   return (
     <>
