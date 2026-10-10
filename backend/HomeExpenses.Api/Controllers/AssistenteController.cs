@@ -34,6 +34,10 @@ public class AssistenteController : ControllerBase
         contents = new[]
         {
             new { parts = new[] { new { text = prompt } } }
+        },
+        generationConfig = new
+        {
+            responseMimeType = "application/json"
         }
     };
 
@@ -41,7 +45,7 @@ public class AssistenteController : ControllerBase
     for (int tentativa = 1; tentativa <= maxTentativas; tentativa++)
     {
         var response = await httpClient.PostAsJsonAsync(
-            $"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key={apiKey}",
+            $"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key={apiKey}",
             corpoRequisicao
         );
 
@@ -52,6 +56,8 @@ public class AssistenteController : ControllerBase
 
             if (tentativa == maxTentativas)
             return StatusCode(502, "Não foi possível processar sua solicitação no momento. Tente novamente mais tarde.");
+
+            await Task.Delay(3000);
           continue;
         }
 
@@ -74,6 +80,8 @@ public class AssistenteController : ControllerBase
 
             if (tentativa == maxTentativas)
                 return BadRequest("Não foi possível interpretar a resposta da IA após múltiplas tentativas.");
+
+                await Task.Delay(1500);
         }
     }
 
@@ -151,7 +159,7 @@ if (!string.IsNullOrEmpty(dto.CategoriaMencionada))
     };
 
     var response = await httpClient.PostAsJsonAsync(
-        $"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key={apiKey}",
+        $"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key={apiKey}",
         corpoRequisicao
     );
 
